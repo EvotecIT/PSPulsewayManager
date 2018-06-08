@@ -7,20 +7,22 @@ function Get-PulsewayMaintenanceMode {
     $RegistryPath = 'HKLM:\SOFTWARE\MMSOFT Design\PC Monitor'
     $RegistryKey = 'MaintenanceMode'
 
-    Get-RegistryRemotely -Computer $Computer -RegistryPath $RegistryPath -RegistryKey $RegistryKey
+    Get-RegistryRemote -Computer $Computer -RegistryPath $RegistryPath -RegistryKey $RegistryKey
 }
 function Set-PulsewayMaintenanceMode {
     [cmdletbinding()]
     param(
         [string[]] $Computer = $Env:COMPUTERNAME,
-        [bool] $Toggle
+        [System.Nullable[bool]] $Toggle = $null
     )
+    if ($Toggle -eq $null) { return 'Error: Not set. Not enough parameters!' }
+
     $RegistryPath = 'HKLM:\SOFTWARE\MMSOFT Design\PC Monitor'
     $RegistryKey = 'MaintenanceMode'
 
     if ($Toggle) { $Value = 1 } else { $Value = 0 }
 
-    Set-RegistryRemotly -Computer $Computer -RegistryPath $RegistryPath -RegistryKey $RegistryKey -Value $Value
+    Set-RegistryRemote -Computer $Computer -RegistryPath $RegistryPath -RegistryKey $RegistryKey -Value $Value
 }
 
 # Account - Dedicated Server
@@ -28,12 +30,14 @@ function Set-PulsewaCustomServerAddress {
     [cmdletbinding()]
     param(
         [string[]] $Computer = $Env:COMPUTERNAME,
-        [string] $CustomServerAddress
+        [string] $CustomServerAddress = ''
     )
+    if ($CustomServerAddress -eq '') { return 'Error: Not set. Not enough parameters!' }
+
     $RegistryPath = 'HKLM:\SOFTWARE\MMSOFT Design\PC Monitor'
     $RegistryKey = 'CustomServerAddress'
 
-    Set-RegistryRemotly -Computer $Computer -RegistryPath $RegistryPath -RegistryKey $RegistryKey -Value $CustomServerAddress
+    Set-RegistryRemote -Computer $Computer -RegistryPath $RegistryPath -RegistryKey $RegistryKey -Value $CustomServerAddress
 }
 function Get-PulsewaCustomServerAddress {
     [cmdletbinding()]
@@ -44,7 +48,7 @@ function Get-PulsewaCustomServerAddress {
     $RegistryPath = 'HKLM:\SOFTWARE\MMSOFT Design\PC Monitor'
     $RegistryKey = 'CustomServerAddress'
 
-    Get-RegistryRemotely -Computer $Computer -RegistryPath $RegistryPath -RegistryKey $RegistryKey
+    Get-RegistryRemote -Computer $Computer -RegistryPath $RegistryPath -RegistryKey $RegistryKey
 }
 
 # Account - Computer Information
@@ -53,12 +57,14 @@ function Set-PulsewayGroupName {
     [cmdletbinding()]
     param(
         [string[]] $Computer = $Env:COMPUTERNAME,
-        [string] $GroupName
+        [string] $GroupName = ''
     )
+    if ($GroupName -eq '') { return 'Error: Not set. Not enough parameters!' }
+
     $RegistryPath = 'HKLM:\SOFTWARE\MMSOFT Design\PC Monitor'
     $RegistryKey = 'GroupName'
 
-    Set-RegistryRemotly -Computer $Computer -RegistryPath $RegistryPath -RegistryKey $RegistryKey -Value $GroupName
+    Set-RegistryRemote -Computer $Computer -RegistryPath $RegistryPath -RegistryKey $RegistryKey -Value $GroupName
 }
 function Get-PulsewayGroupName {
     [cmdletbinding()]
@@ -69,7 +75,7 @@ function Get-PulsewayGroupName {
     $RegistryPath = 'HKLM:\SOFTWARE\MMSOFT Design\PC Monitor'
     $RegistryKey = 'GroupName'
 
-    Get-RegistryRemotely -Computer $Computer -RegistryPath $RegistryPath -RegistryKey $RegistryKey
+    Get-RegistryRemote -Computer $Computer -RegistryPath $RegistryPath -RegistryKey $RegistryKey
 }
 function Get-PulsewayComputerName {
     [cmdletbinding()]
@@ -80,17 +86,19 @@ function Get-PulsewayComputerName {
     $RegistryPath = 'HKLM:\SOFTWARE\MMSOFT Design\PC Monitor'
     $RegistryKey = 'ComputerName'
 
-    Get-RegistryRemotely -Computer $Computer -RegistryPath $RegistryPath -RegistryKey $RegistryKey
+    Get-RegistryRemote -Computer $Computer -RegistryPath $RegistryPath -RegistryKey $RegistryKey
 }
 
 function Set-PulsewayComputerName {
     [cmdletbinding()]
     param(
         [string[]] $Computer = $Env:COMPUTERNAME,
-        [string] $NewComputerName
+        [string] $NewComputerName = ''
     )
+    if ($NewComputerName -eq '') { return 'Error: Not set. Not enough parameters!' }
+
     $RegistryPath = 'HKLM:\SOFTWARE\MMSOFT Design\PC Monitor'
     $RegistryKey = 'ComputerName'
 
-    Set-RegistryRemotly -Computer $Computer -RegistryPath $RegistryPath -RegistryKey $RegistryKey -Value $NewComputerName
+    Set-RegistryRemote -Computer $Computer -RegistryPath $RegistryPath -RegistryKey $RegistryKey -Value $NewComputerName
 }
