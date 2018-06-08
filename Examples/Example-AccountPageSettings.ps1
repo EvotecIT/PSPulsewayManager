@@ -1,6 +1,5 @@
-Import-Module PSPulsewayManager -Force
-
 Clear-Host
+Import-Module PSPulsewayManager -Force
 
 ### Tests - Account Page ###
 Get-PulsewayMaintenanceMode
