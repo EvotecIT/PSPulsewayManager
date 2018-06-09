@@ -2,4 +2,6 @@ Clear-Host
 Import-Module PSPulsewayManager -Force
 Import-Module PSWriteColor
 
-Get-PulsewayLocalDiskSpace -Verbose
+$Drives = Get-PulsewayLocalDiskSpace -Verbose
+$Drives
+$Drives.MonitoredDrives
