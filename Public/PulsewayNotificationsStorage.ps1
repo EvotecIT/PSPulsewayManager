@@ -2,6 +2,10 @@ Enum NotificationStatus {
     Enabled = 1;
     Disabled = 0;
 }
+Enum DiskStatus {
+    Enabled = 1;
+    Disabled = 0;
+}
 
 Enum NotificationType {
     <#
@@ -34,8 +38,6 @@ function Get-PulsewayLocalDiskSpace {
     $ReadRegistrySub = Get-RegistryRemote -Computer $Computer -RegistryPath $RegistryPathSub -RegistryKey $RegistryKeySub1
     $MonitoredDrives = $ReadRegistrySub[0]
 
-    # $Drive = Get-CimInstance Win32_LogicalDisk -ComputerName 'Evo1'
-    # $Drive.VolumeSerialNumber
 
     $ListDrives = New-Object System.Collections.ArrayList
     $HddList = Get-RegistryRemoteList -Computer $Computer -RegistryPath $RegistryPathSub
@@ -69,4 +71,67 @@ function Get-PulsewayLocalDiskSpace {
         MonitoredDrives      = $ListDrives
     }
     return $Return
+}
+
+function Set-PulsewayLocalDiskSpace {
+    [cmdletbinding()]
+    param(
+        [string] $Computer = $Env:COMPUTERNAME,
+        $Drives,
+        [NotificationStatus] $SendNotificationOnLowHDDSpace,
+        [parameter(Mandatory = $False)][Switch]$PassThru
+    )
+    $RegistryPath = 'HKLM:\SOFTWARE\MMSOFT Design\PC Monitor'
+    $RegistryKey1 = 'SendNotificationOnLowHDDSpace'
+
+    $RegistryPathSub = 'HKLM:\SOFTWARE\MMSOFT Design\PC Monitor\HDDList'
+    $RegistryKeySub1 = 'Count'
+
+    $Count = Get-ObjectCount $Drives
+
+    # Enable/disable notification
+    Set-RegistryRemote -Computer $Computer -RegistryPath $RegistryPath `
+        -RegistryKey $RegistryKey1 `
+        -Value ($SendNotificationOnLowHDDSpace -As [int]) -PassThru:$PassThru
+
+    # Count number of drives
+    Set-RegistryRemote -Computer $Computer -RegistryPath $RegistryPathSub `
+        -RegistryKey $RegistryKeySub1 `
+        -Value $Count -PassThru:$PassThru
+
+    $i = 0
+    foreach ($drive in $drives) {
+        Set-RegistryRemote -Computer $Computer -RegistryPath $RegistryPathSub `
+            -RegistryKey "Id$i", "Percentage$i", "Priority$i", "SizeMB$i", "UsePercentage$i" `
+            -Value  $drive.Id, $drive.Percentage, $drive.Priority, $drive.SizeMB, $drive.UsePercentage -PassThru:$PassThru
+        $i++
+    }
+}
+function Get-Drive {
+    param (
+        $Computer = $env:COMPUTERNAME
+    )
+    $Drive = Get-CimInstance Win32_LogicalDisk -ComputerName $Computer | Where-Object { $_.DriveType -eq 3 } | Select-Object DeviceID, VolumeName, Size, FreeSpace, VolumeSerialNumber, PSComputerName
+    return $Drive
+}
+function Set-DriveSettings {
+    param (
+        $Drive,
+        [int] $Percentage,
+        [NotificationType] $Priority,
+        [int] $SizeMB,
+        [status] $UsePercentage
+    )
+    $List = New-Object System.Collections.ArrayList
+    foreach ($d in $drive) {
+        $Disk = @{
+            Id            = $d.VolumeSerialNumber
+            Percentage    = $Percentage
+            Priority      = $Priority -As [int]
+            SizeMB        = $SizeMB
+            UsePercentage = $UsePercentage -AS [int]
+        }
+        $List.Add($Disk) > $null
+    }
+    return $List
 }
