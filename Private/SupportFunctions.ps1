@@ -85,6 +85,30 @@ function Set-RegistryRemote {
     }
     return $ListComputers
 }
+
+function Get-RegistryRemoteList {
+    param(
+        [string[]]$Computer = $Env:COMPUTERNAME,
+        [string]$RegistryPath
+    )
+    $ScriptBlock = {
+        [cmdletbinding()]
+        param(
+            [string]$RegistryPath
+        )
+        $VerbosePreference = $Using:VerbosePreference
+        $Setting = Get-ItemProperty -Path $RegistryPath
+        return $Setting
+    }
+
+    $ListComputers = New-Object System.Collections.ArrayList
+    foreach ($Comp in $Computer) {
+        $Return = Invoke-Command -ComputerName $Comp -ScriptBlock $ScriptBlock -ArgumentList $RegistryPath
+        $ListComputers.Add($Return) | Out-Null
+    }
+    return $ListComputers
+}
+
 function Get-RegistryRemote {
     [cmdletbinding()]
     param(
