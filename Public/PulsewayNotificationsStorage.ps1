@@ -37,6 +37,7 @@ function Get-PulsewayLocalDiskSpace {
     # $Drive = Get-CimInstance Win32_LogicalDisk -ComputerName 'Evo1'
     # $Drive.VolumeSerialNumber
 
+    $ListDrives = New-Object System.Collections.ArrayList
     $HddList = Get-RegistryRemoteList -Computer $Computer -RegistryPath $RegistryPathSub
     for ($i = 0; $i -lt $HddList.Count; $i++) {
         $Id = "Id$i"
@@ -45,11 +46,14 @@ function Get-PulsewayLocalDiskSpace {
         $SizeMB = "SizeMB$i"
         $UsePercentage = "UsePercentage$i"
 
-        $HddList.$Id
-        $HddList.$Percentage
-        $HddList.$Priority
-        $HddList.$SizeMB
-        $HddList.$UsePercentage
+        $Drive = @{
+            Id            = $HddList.$Id
+            Percentage    = $HddList.$Percentage
+            Priority      = $HddList.$Priority
+            SizeMB        = $HddList.$SizeMB
+            UsePercentage = $HddList.$UsePercentage
+        }
+        $ListDrives.Add($Drive)  > $null
     }
 
     $Value = $NotificationEnabled
@@ -62,6 +66,7 @@ function Get-PulsewayLocalDiskSpace {
         # TimeInterval        = $TimeInterval
         #  NotificationType    = $NotificationType -As [NotificationType]
         NotificationEnabled  = $NotificationEnabled #-As [NotificationStatus]
+        MonitoredDrives      = $ListDrives
     }
     return $Return
 }
