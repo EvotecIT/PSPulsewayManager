@@ -18,7 +18,7 @@ function Get-RegistryRemotely {
     $List = New-Object System.Collections.ArrayList
     foreach ($Comp in $Computer) {
         $Return = Invoke-Command -ComputerName $Comp -ScriptBlock $ScriptBlock -ArgumentList $RegistryPath, $RegistryKey
-        $List.Add($Return) | Out-Null
+        $List.Add($Return)  > $null
     }
     return $List
 }
@@ -45,7 +45,7 @@ function Set-RegistryRemotly {
     $List = New-Object System.Collections.ArrayList
     foreach ($Comp in $Computer) {
         $Return = Invoke-Command -ComputerName $Comp -ScriptBlock $ScriptBlock -ArgumentList $RegistryPath, $RegistryKey, $Value
-        $List.Add($Return) | Out-Null
+        $List.Add($Return) > $null
     }
     return $List
 }
@@ -73,7 +73,7 @@ function Set-RegistryRemote {
 
             Write-Verbose "REG WRITE: $RegistryPath REGKEY: $($RegistryKey[$i]) REGVALUE: $($Value[$i])"
             $Setting = Set-ItemProperty -Path $RegistryPath -Name $RegistryKey[$i] -Value $Value[$i] #-PassThru
-            $List.Add($Setting) | Out-Null
+            $List.Add($Setting)  > $null
         }
         return $List
     }
@@ -81,7 +81,7 @@ function Set-RegistryRemote {
     $ListComputers = New-Object System.Collections.ArrayList
     foreach ($Comp in $Computer) {
         $Return = Invoke-Command -ComputerName $Computer -ScriptBlock $ScriptBlock -ArgumentList $RegistryPath, $RegistryKey, $Value
-        $ListComputers.Add($Return) | Out-Null
+        $ListComputers.Add($Return)  > $null
     }
     return $ListComputers
 }
@@ -104,7 +104,7 @@ function Get-RegistryRemoteList {
     $ListComputers = New-Object System.Collections.ArrayList
     foreach ($Comp in $Computer) {
         $Return = Invoke-Command -ComputerName $Comp -ScriptBlock $ScriptBlock -ArgumentList $RegistryPath
-        $ListComputers.Add($Return) | Out-Null
+        $ListComputers.Add($Return)  > $null
     }
     return $ListComputers
 }
@@ -134,14 +134,14 @@ function Get-RegistryRemote {
             Write-Verbose "REG READ: $RegistryPath REGKEY: $RegKey"
             $Setting = Get-ItemProperty -Path $RegistryPath -Name $RegKey
             Write-Verbose "REG VALUE: $($Setting.$RegKey)"
-            $List.Add($Setting.$RegKey) | Out-Null
+            $List.Add($Setting.$RegKey)  > $null
         }
         return $List
     }
     $ListComputers = New-Object System.Collections.ArrayList
     foreach ($Comp in $Computer) {
         $Return = Invoke-Command -ComputerName $Comp -ScriptBlock $ScriptBlock -ArgumentList $RegistryPath, $RegistryKey
-        $ListComputers.Add($Return) | Out-Null
+        $ListComputers.Add($Return)  > $null
     }
     return $ListComputers
 }
