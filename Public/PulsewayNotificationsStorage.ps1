@@ -64,6 +64,7 @@ function Get-PulsewayLocalDiskSpace {
 
     $Return = [ordered] @{
         Name                 = 'HDD'
+        ComputerName         = $Computer
         MonitoredDrivesCount = $MonitoredDrives
         # TimeInterval        = $TimeInterval
         #  NotificationType    = $NotificationType -As [NotificationType]
