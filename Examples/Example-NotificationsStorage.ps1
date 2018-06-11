@@ -12,6 +12,7 @@ $Drives.MonitoredDrives
 
 ## Find all drives for computer/server
 $FindDrives = Get-Drive -Computer $Computer
+$FindDrives
 $ListDrives = @()
 # Set the settings for all drives for particular computer/server (Elevated)
 $DrivesElevated = Set-DriveSettings -Drive $FindDrives -Percentage 10 -Priority Elevated -SizeMB 20000 -UsePercentage No
