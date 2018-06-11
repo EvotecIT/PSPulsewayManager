@@ -111,7 +111,14 @@ function Get-Drive {
     param (
         $Computer = $env:COMPUTERNAME
     )
-    $Drive = Get-CimInstance Win32_LogicalDisk -ComputerName $Computer | Where-Object { $_.DriveType -eq 3 } | Select-Object DeviceID, VolumeName, Size, FreeSpace, VolumeSerialNumber, PSComputerName
+    $Drive = Get-CimInstance Win32_LogicalDisk -ComputerName $Computer | Where-Object { $_.DriveType -eq 3 } | Select-Object DeviceID,
+    VolumeName,
+    Size,
+    FreeSpace,
+    @{label = 'SizeGB'; expression = {[math]::round( ($_.Size / 1GB), 2) }},
+    @{label = 'FreeSpaceGB'; expression = {[math]::round( ($_.FreeSpace / 1GB), 2) }},
+    VolumeSerialNumber,
+    PSComputerName
     return $Drive
 }
 function Set-DriveSettings {
