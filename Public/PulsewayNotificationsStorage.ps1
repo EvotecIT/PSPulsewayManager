@@ -31,12 +31,12 @@ function Get-PulsewayLocalDiskSpace {
     $RegistryKey1 = 'SendNotificationOnLowHDDSpace'
 
     $ReadRegistry = Get-RegistryRemote -Computer $Computer -RegistryPath $RegistryPath -RegistryKey $RegistryKey1
-    $NotificationEnabled = $ReadRegistry[0]
+    $NotificationEnabled = $ReadRegistry
 
     $RegistryPathSub = 'HKLM:\SOFTWARE\MMSOFT Design\PC Monitor\HDDList'
     $RegistryKeySub1 = 'Count'
     $ReadRegistrySub = Get-RegistryRemote -Computer $Computer -RegistryPath $RegistryPathSub -RegistryKey $RegistryKeySub1
-    $MonitoredDrives = $ReadRegistrySub[0]
+    $MonitoredDrives = $ReadRegistrySub
 
 
     $ListDrives = New-Object System.Collections.ArrayList
