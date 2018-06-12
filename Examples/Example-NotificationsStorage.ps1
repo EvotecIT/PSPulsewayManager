@@ -5,7 +5,7 @@ Import-Module PSWriteColor
 $Computer = 'AD1'
 
 Write-Color 'Get ', 'Low Disk Space' -Color White, Yellow
-$Drives = Get-PulsewayLocalDiskSpace -Computer $Computer
+$Drives = Get-PulsewayLocalDiskSpace -Computer $Computer -Verbose
 $Drives
 Write-Color 'List ', ' drives separatly' -Color White, Yellow -LinesAfter 1
 $Drives.MonitoredDrives
@@ -22,4 +22,4 @@ $DrivesCritical = Set-DriveSettings -Drive $FindDrives -Percentage 10 -Priority 
 $ListDrives += $DrivesElevated
 $ListDrives += $DrivesCritical
 
-Set-PulsewayLocalDiskSpace -Computer $Computer -Drives $ListDrives -SendNotificationOnLowHDDSpace Enabled -Verbose
+#Set-PulsewayLocalDiskSpace -Computer $Computer -Drives $ListDrives -SendNotificationOnLowHDDSpace Enabled -Verbose
