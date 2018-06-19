@@ -6,7 +6,7 @@ I will continue adding more functions when I will have requirement to do so for 
 
 ### Pulseway GET functions
 
-```powershell
+```
 CommandType     Name                                               Version    Source
 -----------     ----                                               -------    ------
 Function        Get-PulsewayComputerName                           0.5        PSPulsewayManager
@@ -23,7 +23,7 @@ Function        Get-PulsewayStatus                                 0.5        PS
 
 ### Pulseway SET functions
 
-```powershell
+```
 Function        Set-PulsewayComputerName                           0.5        PSPulsewayManager
 Function        Set-PulsewayCPUAbove                               0.5        PSPulsewayManager
 Function        Set-PulsewayCPUBelow                               0.5        PSPulsewayManager
@@ -37,7 +37,7 @@ Function        Set-PulsewayMonitoredServices                      0.5        PS
 
 ### Pulseway Support functions
 
-```powershell
+```
 Function        Get-Drive                                          0.5        PSPulsewayManager
 Function        Get-ObjectCount                                    0.5        PSPulsewayManager
 Function        Get-PulsewaCustomServerAddress                     0.5        PSPulsewayManager
