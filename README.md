@@ -4,7 +4,7 @@ Following is an easy to use `Powershell module` to control some of Pulseway Mana
 
 I will continue adding more functions when I will have requirement to do so for my needs. Otherwise... you can make request ;-)
 
-### Pulseway GET functions
+####### Pulseway GET functions
 
 ```
 CommandType     Name                                               Version    Source
@@ -21,7 +21,7 @@ Function        Get-PulsewayMonitoredServices                      0.5        PS
 Function        Get-PulsewayStatus                                 0.5        PSPulsewayManager
 ```
 
-### Pulseway SET functions
+####### Pulseway SET functions
 
 ```
 Function        Set-PulsewayComputerName                           0.5        PSPulsewayManager
@@ -33,20 +33,4 @@ Function        Set-PulsewayMaintenanceMode                        0.5        PS
 Function        Set-PulsewayMemoryLow                              0.5        PSPulsewayManager
 Function        Set-PulsewayMonitoredPortClosed                    0.5        PSPulsewayManager
 Function        Set-PulsewayMonitoredServices                      0.5        PSPulsewayManager
-```
-
-### Pulseway Support functions
-
-```
-Function        Get-Drive                                          0.5        PSPulsewayManager
-Function        Get-ObjectCount                                    0.5        PSPulsewayManager
-Function        Get-PulsewaCustomServerAddress                     0.5        PSPulsewayManager
-Function        Get-RegistryRemote                                 0.5        PSPulsewayManager
-Function        Get-RegistryRemoteList                             0.5        PSPulsewayManager
-Function        Get-RegistryRemotely                               0.5        PSPulsewayManager
-Function        Get-Test                                           0.5        PSPulsewayManager
-Function        Set-DriveSettings                                  0.5        PSPulsewayManager
-Function        Set-PulsewaCustomServerAddress                     0.5        PSPulsewayManager
-Function        Set-RegistryRemote                                 0.5        PSPulsewayManager
-Function        Set-RegistryRemotly                                0.5        PSPulsewayManager
 ```
