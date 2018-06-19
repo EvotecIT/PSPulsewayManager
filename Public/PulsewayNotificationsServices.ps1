@@ -3,50 +3,117 @@ function Get-PulsewayMonitoredServices {
     param(
         [string] $Computer = $Env:COMPUTERNAME
     )
+    $RegistryPath = 'HKLM:\SOFTWARE\MMSOFT Design\PC Monitor'
+    $RegistryKey1 = 'SendNotificationOnServiceStop'
+    $RegistryKey2 = 'PrioritySendNotificationOnServiceStop'
 
-    # PrioritySendNotificationOnServiceStop = priority
-    # SendNotificationOnServiceStop 1/0
+    $RegistryPathSub1 = 'HKLM:\SOFTWARE\MMSOFT Design\PC Monitor\Services'
+    $RegistryKeySub1 = 'Count'
+
+    $RegistryPathSub2 = 'HKLM:\SOFTWARE\MMSOFT Design\PC Monitor\ServicesExcludedFromNotifications'
+    $RegistryKeySub2 = 'Count'
+
+    $ReadRegistry = Get-RegistryRemote -Computer $Computer -RegistryPath $RegistryPath -RegistryKey $RegistryKey1, $RegistryKey2
+    $NotificationEnabled = $ReadRegistry[0]
+    $NotificationType = $ReadRegistry[1]
+
+    $ReadRegistrySub1 = Get-RegistryRemote -Computer $Computer -RegistryPath $RegistryPathSub1 -RegistryKey $RegistryKeySub1
+    $ServicesCount = $ReadRegistrySub1
+
+    $ReadRegistrySub2 = Get-RegistryRemote -Computer $Computer -RegistryPath $RegistryPathSub2 -RegistryKey $RegistryKeySub2
+    $ServicesExcludedCount = $ReadRegistrySub2
+
+    $ListControlled = New-Object System.Collections.ArrayList
+
+    $Services = Get-RegistryRemoteList -Computer $Computer -RegistryPath $RegistryPathSub1
+    for ($i = 0; $i -lt $Services.Count; $i++) {
+        $Service = "Service$i"
+        $ListControlled.Add($Services.$Service)  > $null
+    }
+
+    $ListExcluded = New-Object System.Collections.ArrayList
+    $Services = Get-RegistryRemoteList -Computer $Computer -RegistryPath $RegistryPathSub2
+    for ($i = 0; $i -lt $Services.Count; $i++) {
+        $Service = "Service$i"
+        $ListExcluded.Add($Services.$Service)  > $null
+    }
+
+    $ListMonitored = Compare-Object -ReferenceObject $ListControlled -DifferenceObject $ListExcluded -PassThru
+
+    $Return = [ordered] @{
+        Name                    = 'Services'
+        ComputerName            = $Computer
+        CountServicesControlled = $ServicesCount
+        CountServicesExcluded   = $ServicesExcludedCount
+        CountServicesMonitored  = $ListMonitored.Count
+        NotificationType        = $NotificationType -As [NotificationType]
+        NotificationEnabled     = $NotificationEnabled -As [NotificationStatus]
+        ServicesControled       = $ListControlled
+        ServicesExcluded        = $ListExcluded
+        ServicesMonitored       = $ListMonitored
+    }
+    return $Return
+}
+
+function Set-PulsewayMonitoredServices {
+    [cmdletbinding()]
+    param(
+        [string] $Computer = $Env:COMPUTERNAME,
+        [array] $Services,
+        [array] $ServicesToMonitor,
+        [NotificationStatus] $SendNotificationOnServiceStop,
+        [NotificationType] $PrioritySendNotificationOnServiceStop,
+        [parameter(Mandatory = $False)][Switch]$PassThru
+    )
+    Write-Verbose 'Set-PulsewayMonitoredServices - GetType: '
 
     $RegistryPath = 'HKLM:\SOFTWARE\MMSOFT Design\PC Monitor'
     $RegistryKey1 = 'SendNotificationOnServiceStop'
     $RegistryKey2 = 'PrioritySendNotificationOnServiceStop'
 
-    $ReadRegistry = Get-RegistryRemote -Computer $Computer -RegistryPath $RegistryPath -RegistryKey $RegistryKey1, $RegistryKey2
-    $NotificationEnabled = $ReadRegistry[0]
-    $NotificationPriority = $ReadRegistry[1]
-
-    $RegistryPathSub = 'HKLM:\SOFTWARE\MMSOFT Design\PC Monitor\Services'
+    $RegistryPathSub1 = 'HKLM:\SOFTWARE\MMSOFT Design\PC Monitor\Services'
     $RegistryKeySub1 = 'Count'
-    $ReadRegistrySub = Get-RegistryRemote -Computer $Computer -RegistryPath $RegistryPathSub -RegistryKey $RegistryKeySub1
-    $ServicesCount = $ReadRegistrySub
+
+    $RegistryPathSub2 = 'HKLM:\SOFTWARE\MMSOFT Design\PC Monitor\ServicesExcludedFromNotifications'
+    $RegistryKeySub2 = 'Count'
+
+    $Count = Get-ObjectCount $Services
 
 
-    $List = New-Object System.Collections.ArrayList
-    $Services = Get-RegistryRemoteList -Computer $Computer -RegistryPath $RegistryPathSub
-    for ($i = 0; $i -lt $Services.Count; $i++) {
-        #$Id = "Id$i"
-        #$Percentage = "Percentage$i"
-        ##$Priority = "Priority$i"
-        #$SizeMB = "SizeMB$i"
-        $Service = "Service$i"
+    $ServicesExcluded = Compare-Object -ReferenceObject $Services -DifferenceObject $ServicesToMonitor -PassThru
+    $CountExcluded = Get-ObjectCount $ServicesExcluded
 
-        $ServicesFromRegistry = @{
-            Service = $Services.$Service
-        }
-        $List.Add($ServicesFromRegistry)  > $null
+
+    # Enable/disable notification
+    Set-RegistryRemote -Computer $Computer -RegistryPath $RegistryPath `
+        -RegistryKey $RegistryKey1, $RegistryKey2 `
+        -Value ($SendNotificationOnServiceStop -As [int]), ($PrioritySendNotificationOnServiceStop -As [Int]) `
+        -PassThru:$PassThru
+
+    # Count number of services
+    Set-RegistryRemote -Computer $Computer -RegistryPath $RegistryPathSub1 `
+        -RegistryKey $RegistryKeySub1 `
+        -Value $Count -PassThru:$PassThru
+    # Count number of services excluded
+    Set-RegistryRemote -Computer $Computer -RegistryPath $RegistryPathSub2 `
+        -RegistryKey $RegistryKeySub2 `
+        -Value $CountExcluded -PassThru:$PassThru
+
+    $i = 0
+    foreach ($service in $Services) {
+        Set-RegistryRemote -Computer $Computer -RegistryPath $RegistryPathSub1 `
+            -RegistryKey "Service$i" `
+            -Value $service `
+            -PassThru:$PassThru
+        $i++
+    }
+    $i = 0
+    foreach ($service in $ServicesExcluded) {
+        Set-RegistryRemote -Computer $Computer -RegistryPath $RegistryPathSub2 `
+            -RegistryKey "Service$i" `
+            -Value $service `
+            -PassThru:$PassThru
+        $i++
     }
 
-    #$Value = $NotificationEnabled
-    #$ValueConverted = $Value -As [NotificationStatus]
-    #Write-verbose "Return VALUE: $NotificationEnabled After CONVERSION: $ValueConverted"
-
-    $Return = [ordered] @{
-        Name                = 'Services'
-        ComputerName        = $Computer
-        Count               = $ServicesCount
-        NotificationType    = $NotificationType -As [NotificationType]
-        NotificationEnabled = $NotificationEnabled -As [NotificationStatus]
-        MonitoredServices   = $List
-    }
-    return $Return
 }
