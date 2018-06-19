@@ -12,7 +12,7 @@
     RootModule        = 'PSPulsewayManager.psm1'
 
     # Version number of this module.
-    ModuleVersion     = '0.4'
+    ModuleVersion     = '0.5'
 
     # Supported PSEditions
     # CompatiblePSEditions = @()
@@ -58,7 +58,7 @@
     # RequiredAssemblies = @()
 
     # Script files (.ps1) that are run in the caller's environment prior to importing this module.
-    # ScriptsToProcess = @()
+    ScriptsToProcess  = @('Enums\Enums.ps1')
 
     # Type files (.ps1xml) to be loaded when importing this module
     # TypesToProcess = @()
@@ -96,7 +96,7 @@
         PSData = @{
 
             # Tags applied to this module. These help with module discovery in online galleries.
-            # Tags = @()
+            Tags       = @('pulseway', 'powershell')
 
             # A URL to the license for this module.
             # LicenseUri = ''

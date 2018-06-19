@@ -1,9 +1,3 @@
-Enum PulsewayStatus {
-    NotAvailable = 0;
-    NotRunning = 1;
-    Running = 2;
-}
-
 function Get-PulsewayStatus {
     param(
         [string] $Computer = $ENV:COMPUTERNAME
