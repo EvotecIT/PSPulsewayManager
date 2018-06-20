@@ -19,4 +19,4 @@ $Services.ServicesControled
 $MonitorServiceControlled = @('BITS', 'IISADMIN', 'Audiosrv')
 $MonitorServiceNotification = @('IISADMIN')
 
-Set-PulsewayMonitoredServices -Services $MonitorServiceControlled -servicesToMonitor $MonitorServiceNotification -SendNotificationOnServiceStop Enabled -PrioritySendNotificationOnServiceStop Lows
+Set-PulsewayMonitoredServices -Services $MonitorServiceControlled -servicesToMonitor $MonitorServiceNotification -SendNotificationOnServiceStop Enabled -PrioritySendNotificationOnServiceStop Low
