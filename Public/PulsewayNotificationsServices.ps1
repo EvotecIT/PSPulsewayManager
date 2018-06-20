@@ -79,10 +79,8 @@ function Set-PulsewayMonitoredServices {
 
     $Count = Get-ObjectCount $Services
 
-
     $ServicesExcluded = Compare-Object -ReferenceObject $Services -DifferenceObject $ServicesToMonitor -PassThru
     $CountExcluded = Get-ObjectCount $ServicesExcluded
-
 
     # Enable/disable notification
     Set-RegistryRemote -Computer $Computer -RegistryPath $RegistryPath `
@@ -99,21 +97,23 @@ function Set-PulsewayMonitoredServices {
         -RegistryKey $RegistryKeySub2 `
         -Value $CountExcluded -PassThru:$PassThru
 
-    $i = 0
-    foreach ($service in $Services) {
-        Set-RegistryRemote -Computer $Computer -RegistryPath $RegistryPathSub1 `
-            -RegistryKey "Service$i" `
-            -Value $service `
-            -PassThru:$PassThru
-        $i++
+    $ListServicesNameA = @()
+    for ($i = 0; $i -le $Services.Count; $i++) {
+        $ListServicesNameA += "Service$i"
     }
-    $i = 0
-    foreach ($service in $ServicesExcluded) {
-        Set-RegistryRemote -Computer $Computer -RegistryPath $RegistryPathSub2 `
-            -RegistryKey "Service$i" `
-            -Value $service `
-            -PassThru:$PassThru
-        $i++
+    $ListServicesNameB = @()
+    for ($i = 0; $i -le $ServicesExcluded.Count; $i++) {
+        $ListServicesNameB += "Service$i"
     }
+
+    Set-RegistryRemote -Computer $Computer -RegistryPath $RegistryPathSub1 `
+        -RegistryKey $ListServicesNameA `
+        -Value $Services `
+        -PassThru:$PassThru
+
+    Set-RegistryRemote -Computer $Computer -RegistryPath $RegistryPathSub2 `
+        -RegistryKey $ListServicesNameB `
+        -Value $ServicesExcluded `
+        -PassThru:$PassThru
 
 }
