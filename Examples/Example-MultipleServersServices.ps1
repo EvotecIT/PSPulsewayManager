@@ -32,7 +32,7 @@ $ServicesRRAS = @('RaMgmtSvc', 'RasMan')
 $ServicesBackup = @('VeeamBackupSvc', 'VeeamBrokerSvc', 'VeeamCatalogSvc', 'VeeamCloudSvc', 'VeeamDeploySvc', 'VeeamDistributionSvc', 'VeeamMountSvc', 'VeeamNFSSvc', 'VeeamTransportSvc')
 $ServicesATA = @('ATACenter')
 $ServicesCA = @('CertSvc')
-$ServicesPrintServer = @('Spooler') #BH-P-PRINTSRV1
+$ServicesPrintServer = @('Spooler') 
 $ServicesHyperV = @('vmickvpexchange', 'vmicguestinterface', 'vmicshutdown', 'vmicheartbeat', 'vmcompute', 'vmicvmsession', 'vmicrdv', 'vmictimesync', 'vmms', 'vmicvss')
 ###
 
